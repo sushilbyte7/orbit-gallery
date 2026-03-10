@@ -193,25 +193,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
             const inclination = Math.acos(1 - 2 * t);
             const azimuth = angleIncrement * i;
 
-            // Convert to degrees and focus on front hemisphere
+            // Convert to degrees
             let phi = inclination * (180 / Math.PI);
             let theta = (azimuth * (180 / Math.PI)) % 360;
 
-            // Better pole coverage - reach poles but avoid extreme mathematical issues
-            const poleBonus = Math.pow(Math.abs(phi - 90) / 90, 0.6) * 35; // Moderate boost toward poles
-            if (phi < 90) {
-                phi = Math.max(5, phi - poleBonus); // Reach closer to top pole (15° minimum)
-            } else {
-                phi = Math.min(175, phi + poleBonus); // Reach closer to bottom pole (165° maximum)
-            }
-
-            // Map to fuller vertical range - covers poles but avoids extremes
-            phi = 15 + (phi / 180) * 150; // Map to 15-165 degrees for pole coverage with stability
-
-            // Add slight randomization to prevent perfect patterns
-            const randomOffset = (Math.random() - 0.5) * 20;
+            // Add slight randomization to prevent perfect patterns but keep it small to avoid creating gaps
+            const randomOffset = (Math.random() - 0.5) * 10;
             theta = (theta + randomOffset) % 360;
-            phi = Math.max(0, Math.min(180, phi + (Math.random() - 0.5) * 10));
+            phi = Math.max(0, Math.min(180, phi + (Math.random() - 0.5) * 5));
 
             positions.push({
                 theta: theta,
@@ -312,8 +301,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                 const dy = pos.y - other.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                // Minimum distance to prevent overlap (with more generous padding)
-                const minDistance = (imageSize + otherSize) / 2 + 25;
+                // Minimum distance to prevent overlap (moderate padding to balance size and gaps)
+                const minDistance = (imageSize + otherSize) / 2 + 15;
 
                 if (distance < minDistance && distance > 0) {
                     // More aggressive scale reduction to prevent overlap
