@@ -12,90 +12,32 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 // EASY CONFIGURATION - Edit these values to customize the component
 // ==========================================
 
-const BASE_IMAGES: Omit<ImageData, 'id'>[] = [
-    {
-        src: "https://images.unsplash.com/photo-1758178309498-036c3d7d73b3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 1",
-        title: "That day",
-        description: "When everything felt right for the first time."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1757647016230-d6b42abc6cc9?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2072",
-        alt: "Memory 2",
-        title: "Your smile",
-        description: "The moment I knew I wanted to see it every day."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1757906447358-f2b2cb23d5d8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 3",
-        title: "Our place",
-        description: "Where we talked until the world disappeared."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1742201877377-03d18a323c18?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1064",
-        alt: "Memory 4",
-        title: "Late nights",
-        description: "Staying up just to hear your voice a little longer."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1757081791153-3f48cd8c67ac?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 5",
-        title: "The way you laugh",
-        description: "My favorite sound in the whole world."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1757626961383-be254afee9a0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 6",
-        title: "Quiet mornings",
-        description: "When I realized home isn't a place, it's you."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1756748371390-099e4e6683ae?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 7",
-        title: "Your eyes",
-        description: "How they light up when you talk about what you love."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1755884405235-5c0213aa3374?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 8",
-        title: "Silly moments",
-        description: "Dancing in the kitchen like no one's watching."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1757495404191-e94ed7e70046?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 9",
-        title: "Weekend adventures",
-        description: "Getting lost together and finding our way back."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1756197256528-f9e6fcb82b04?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1064",
-        alt: "Memory 10",
-        title: "Holding hands",
-        description: "The simplest thing that means everything."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1534083220759-4c3c00112ea0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-        alt: "Memory 11",
-        title: "Your kindness",
-        description: "How you make everyone around you feel special."
-    },
-    {
-        src: "https://images.unsplash.com/photo-1755278338891-e8d8481ff087?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1674",
-        alt: "Memory 12",
-        title: "Every day with you",
-        description: "The best choice I ever made."
-    }
+const captions = [
+    "When everything felt right for the first time.",
+    "The moment I knew I wanted to see it every day.",
+    "Where we talked until the world disappeared.",
+    "Staying up just to hear your voice a little longer.",
+    "My favorite sound in the whole world.",
+    "When I realized home isn't a place, it's you.",
+    "How they light up when you talk about what you love.",
+    "Dancing in the kitchen like no one's watching.",
+    "Getting lost together and finding our way back.",
+    "The simplest thing that means everything.",
+    "How you make everyone around you feel special.",
+    "The best choice I ever made.",
+    "A lovely memory to cherish forever."
 ];
 
-// Generate more images by repeating the base set
 const IMAGES: ImageData[] = [];
-for (let i = 0; i < 60; i++) {
-    const baseIndex = i % BASE_IMAGES.length;
-    const baseImage = BASE_IMAGES[baseIndex];
+
+// Load all 99 images from the public/images directory
+for (let i = 1; i <= 99; i++) {
     IMAGES.push({
-        id: `img-${i + 1}`,
-        ...baseImage,
-        alt: `${baseImage.alt} (${Math.floor(i / BASE_IMAGES.length) + 1})`
+        id: `img-${i}`,
+        src: `/images/anjali (${i}).webp`,
+        alt: `Anjali ${i}`,
+        title: `Memory ${i}`,
+        description: captions[(i - 1) % captions.length]
     });
 }
 
@@ -114,16 +56,16 @@ interface SphereConfig {
 }
 
 const CONFIG: SphereConfig = {
-    containerSize: 600,          // Container size in pixels
-    sphereRadius: 200,           // Virtual sphere radius (increased for better spacing)
-    dragSensitivity: 0.8,        // Mouse drag sensitivity (0.1 - 2.0)
-    momentumDecay: 0.96,         // How fast momentum fades (0.8 - 0.99)
-    maxRotationSpeed: 6,         // Maximum rotation speed (1 - 10)
-    baseImageScale: 0.15,        // Base image size (reduced to minimize overlap)
-    hoverScale: 1.3,             // Hover scale multiplier (1.0 - 2.0)
-    perspective: 1000,           // CSS perspective value (500 - 2000)
-    autoRotate: true,            // Enable/disable auto rotation
-    autoRotateSpeed: 0.2         // Auto rotation speed (0.1 - 2.0, higher = faster)
+    containerSize: 600,
+    sphereRadius: 200,
+    dragSensitivity: 0.8,
+    momentumDecay: 0.96,
+    maxRotationSpeed: 6,
+    baseImageScale: 0.15,
+    hoverScale: 1.3,
+    perspective: 1000,
+    autoRotate: true,
+    autoRotateSpeed: 0.2
 };
 
 export default function Home() {
@@ -197,7 +139,7 @@ export default function Home() {
                     </div>
 
                     <div className="absolute top-24 inset-x-0 text-center space-y-2 px-4 sm:static sm:inset-x-auto">
-                        {showHero && <GradualSpacing text="HER" />}
+                        {showHero && <GradualSpacing text="FOR ANJALI" />}
                         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">All the moments that matter</p>
                     </div>
 
