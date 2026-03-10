@@ -7,6 +7,11 @@ import { PasswordGate } from "@/components/ui/password-gate";
 import GradualSpacing from "@/components/ui/hero-shutter-text";
 import DustParticles from "@/components/ui/dust-particles";
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Great_Vibes, Dancing_Script } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const greatVibes = Great_Vibes({ weight: "400", subsets: ["latin"] });
+const dancingScript = Dancing_Script({ subsets: ["latin"] });
 
 // ==========================================
 // EASY CONFIGURATION - Edit these values to customize the component
@@ -139,8 +144,8 @@ export default function Home() {
                     </div>
 
                     <div className="absolute top-24 inset-x-0 text-center space-y-2 px-4 sm:static sm:inset-x-auto">
-                        {showHero && <GradualSpacing text="FOR ANJALI" />}
-                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">A collection of beautiful moments</p>
+                        {showHero && <GradualSpacing text="For Anjali" className={cn(greatVibes.className, "font-normal md:text-8xl text-5xl tracking-normal")} />}
+                        <p className={cn("text-lg sm:text-2xl text-slate-600 dark:text-slate-400", dancingScript.className)}>A collection of beautiful moments</p>
                     </div>
 
                     <SphereImageGrid
