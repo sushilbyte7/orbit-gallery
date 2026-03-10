@@ -467,7 +467,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                 if (isSmallMobile) {
                     // Extra small devices (320px–480px)
                     newContainerSize = viewportWidth * 0.94;
-                    newSphereRadius = newContainerSize * 0.45;
+                    newSphereRadius = newContainerSize * 0.52;
 
                     // 🔥 FIX
                     newBaseImageScale = 0.22;
