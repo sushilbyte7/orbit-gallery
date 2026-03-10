@@ -140,7 +140,7 @@ export default function Home() {
 
                     <div className="absolute top-24 inset-x-0 text-center space-y-2 px-4 sm:static sm:inset-x-auto">
                         {showHero && <GradualSpacing text="FOR ANJALI" />}
-                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">All the moments that matter</p>
+                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">A collection of beautiful moments</p>
                     </div>
 
                     <SphereImageGrid
