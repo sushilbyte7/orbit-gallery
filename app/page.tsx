@@ -96,7 +96,7 @@ export default function Home() {
     // Mount HeroText 300ms after loader is gone so GSAP animation plays fresh
     useEffect(() => {
         if (!isLoading) {
-            const timer = setTimeout(() => setShowHero(true), 300);
+            const timer = setTimeout(() => setShowHero(true), 100);
             return () => clearTimeout(timer);
         }
     }, [isLoading]);
@@ -139,7 +139,7 @@ export default function Home() {
                     </div>
 
                     {/* Theme Switch in top-right corner */}
-                    <div className="fixed top-4 right-4 z-50">
+                    <div className="absolute top-7 right-7 z-50">
                         <ThemeSwitch />
                     </div>
 
