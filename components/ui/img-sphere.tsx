@@ -483,6 +483,23 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
                 // Apply maximum constraint
                 newContainerSize = Math.min(newContainerSize - mobilePadding, containerSize);
+            } else {
+                // PC responsive calculations
+                const viewportHeight = window.innerHeight;
+                // Approximate height of hero text + padding + footer to ensure no vertical overflow
+                const availableHeight = viewportHeight - 250;
+                const availableWidth = viewportWidth - 100;
+
+                // Dynamically calculate size based on available viewport space
+                // This allows it to scale down on small laptops and up on 4K monitors
+                const targetSize = Math.min(availableWidth, availableHeight);
+                
+                // Clamp between a reasonable min (400) and max (850)
+                newContainerSize = Math.min(850, Math.max(400, targetSize));
+                
+                // Scale the sphere radius proportionally
+                const scaleRatio = newContainerSize / containerSize;
+                newSphereRadius = sphereRadius * scaleRatio;
             }
 
             setResponsiveDimensions({
@@ -555,7 +572,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     const renderImageNode = useCallback((image: ImageData, index: number) => {
         const position = worldPositions[index];
 
-        if (!position || !position.isVisible) return null;
+        if (!position) return null;
 
         const imageSize = baseImageSize * position.scale;
         const isHovered = hoveredIndex === index;
@@ -570,13 +587,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                     height: `${imageSize}px`,
                     left: `${actualContainerSize / 2 + position.x}px`,
                     top: `${actualContainerSize / 2 + position.y}px`,
-                    opacity: position.fadeOpacity,
+                    opacity: position.isVisible ? position.fadeOpacity : 0,
                     transform: `translate(-50%, -50%) scale(${finalScale})`,
-                    zIndex: position.zIndex
+                    zIndex: position.zIndex,
+                    pointerEvents: position.isVisible ? 'auto' : 'none'
                 }}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                onClick={() => setSelectedImage(image)}
+                onMouseEnter={() => position.isVisible && setHoveredIndex(index)}
+                onMouseLeave={() => position.isVisible && setHoveredIndex(null)}
+                onClick={() => position.isVisible && setSelectedImage(image)}
             >
                 <div className="relative w-full h-full rounded-full overflow-hidden shadow-lg border-2 border-white/20">
                     <img
