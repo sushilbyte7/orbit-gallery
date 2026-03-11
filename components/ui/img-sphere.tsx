@@ -37,19 +37,19 @@ import { X } from 'lucide-react';
 // TYPES & INTERFACES
 // ==========================================
 
-export interface Position3D {
+interface Position3D {
     x: number;
     y: number;
     z: number;
 }
 
-export interface SphericalPosition {
+interface SphericalPosition {
     theta: number;  // Azimuth angle in degrees
     phi: number;    // Polar angle in degrees
     radius: number; // Distance from center
 }
 
-export interface WorldPosition extends Position3D {
+interface WorldPosition extends Position3D {
     scale: number;
     zIndex: number;
     isVisible: boolean;
@@ -73,7 +73,6 @@ export interface SphereImageGridProps {
     momentumDecay?: number;
     maxRotationSpeed?: number;
     baseImageScale?: number;
-    hoverScale?: number;
     perspective?: number;
     autoRotate?: boolean;
     autoRotateSpeed?: number;
@@ -103,20 +102,12 @@ interface MousePosition {
 
 const SPHERE_MATH = {
     degreesToRadians: (degrees: number): number => degrees * (Math.PI / 180),
-    radiansToDegrees: (radians: number): number => radians * (180 / Math.PI),
 
     sphericalToCartesian: (radius: number, theta: number, phi: number): Position3D => ({
         x: radius * Math.sin(phi) * Math.cos(theta),
         y: radius * Math.cos(phi),
         z: radius * Math.sin(phi) * Math.sin(theta)
     }),
-
-    calculateDistance: (pos: Position3D, center: Position3D = { x: 0, y: 0, z: 0 }): number => {
-        const dx = pos.x - center.x;
-        const dy = pos.y - center.y;
-        const dz = pos.z - center.z;
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
-    },
 
     normalizeAngle: (angle: number): number => {
         while (angle > 180) angle -= 360;
@@ -137,7 +128,6 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     momentumDecay = 0.95,
     maxRotationSpeed = 5,
     baseImageScale = 0.12,
-    hoverScale = 1.2,
     perspective = 1000,
     autoRotate = false,
     autoRotateSpeed = 0.3,
@@ -371,12 +361,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         lastMousePos.current = { x: e.clientX, y: e.clientY };
     }, []);
 
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!isDragging) return;
-
-        const deltaX = e.clientX - lastMousePos.current.x;
-        const deltaY = e.clientY - lastMousePos.current.y;
-
+    // Shared helper — identical logic used by both mouse and touch move handlers
+    const applyDragDelta = useCallback((deltaX: number, deltaY: number, newClientX: number, newClientY: number) => {
         const rotationDelta = {
             x: -deltaY * dragSensitivity,
             y: deltaX * dragSensitivity
@@ -388,14 +374,21 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
             z: prev.z
         }));
 
-        // Update velocity for momentum
         velocityRef.current = {
             x: clampRotationSpeed(rotationDelta.x),
             y: clampRotationSpeed(rotationDelta.y)
         };
 
-        lastMousePos.current = { x: e.clientX, y: e.clientY };
-    }, [isDragging, dragSensitivity, clampRotationSpeed]);
+        lastMousePos.current = { x: newClientX, y: newClientY };
+    }, [dragSensitivity, clampRotationSpeed]);
+
+    const handleMouseMove = useCallback((e: MouseEvent) => {
+        if (!isDragging) return;
+
+        const deltaX = e.clientX - lastMousePos.current.x;
+        const deltaY = e.clientY - lastMousePos.current.y;
+        applyDragDelta(deltaX, deltaY, e.clientX, e.clientY);
+    }, [isDragging, applyDragDelta]);
 
     const handleMouseUp = useCallback(() => {
         setIsDragging(false);
@@ -416,25 +409,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         const touch = e.touches[0];
         const deltaX = touch.clientX - lastMousePos.current.x;
         const deltaY = touch.clientY - lastMousePos.current.y;
-
-        const rotationDelta = {
-            x: -deltaY * dragSensitivity,
-            y: deltaX * dragSensitivity
-        };
-
-        setRotation(prev => ({
-            x: SPHERE_MATH.normalizeAngle(prev.x + clampRotationSpeed(rotationDelta.x)),
-            y: SPHERE_MATH.normalizeAngle(prev.y + clampRotationSpeed(rotationDelta.y)),
-            z: prev.z
-        }));
-
-        velocityRef.current = {
-            x: clampRotationSpeed(rotationDelta.x),
-            y: clampRotationSpeed(rotationDelta.y)
-        };
-
-        lastMousePos.current = { x: touch.clientX, y: touch.clientY };
-    }, [isDragging, dragSensitivity, clampRotationSpeed]);
+        applyDragDelta(deltaX, deltaY, touch.clientX, touch.clientY);
+    }, [isDragging, applyDragDelta]);
 
     const handleTouchEnd = useCallback(() => {
         setIsDragging(false);
